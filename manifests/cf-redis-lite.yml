@@ -96,13 +96,19 @@ jobs:
     release: cf-redis
   - name: syslog-configurator
     release: cf-redis
-  instances: 1
+  - name: metron_agent
+    release: cf-redis
+  instances: 5
   resource_pool: services-small
   persistent_disk: 4096
   networks:
   - name: services
     static_ips:
     - 10.244.3.54
+    - 10.244.3.58
+    - 10.244.3.62
+    - 10.244.3.66
+    - 10.244.3.70
 - name: cf-redis-broker
   templates:
   - name: cf-redis-broker
@@ -156,6 +162,14 @@ jobs:
   - name: smoke-tests
     release: cf-redis
 properties:
+  etcd:
+    machines:
+    - 10.244.0.42
+  metron_agent:
+    deployment: bosh-lite
+    zone: z1
+  loggregator_endpoint:
+    shared_secret: PLACEHOLDER-LOGGREGATOR-SECRET
   syslog_aggregator:
     address: 127.0.0.1
     port: 1234
@@ -180,6 +194,10 @@ properties:
       network: services
       dedicated_nodes:
       - 10.244.3.54
+      - 10.244.3.58
+      - 10.244.3.62
+      - 10.244.3.66
+      - 10.244.3.70
       service_instance_limit: 3
       auth:
         username: admin

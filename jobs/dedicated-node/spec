@@ -11,6 +11,7 @@ templates:
   redis_ctl.erb: bin/redis_ctl
   redis-agent_ctl.erb: bin/redis-agent_ctl
   nginx_ctl.erb: bin/nginx_ctl
+  metrics_ctl.erb: bin/metrics_ctl
 
   redis-agent.pem.erb: config/ssl/redis-agent.pem
   redis-agent.key.erb: config/ssl/redis-agent.key

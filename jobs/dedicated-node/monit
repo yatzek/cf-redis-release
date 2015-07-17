@@ -11,6 +11,13 @@ check process redis
   group vcap
   depends on redis-agent
 
+check process metrics
+  with pidfile /var/vcap/sys/run/metrics.pid
+  start program "/var/vcap/jobs/dedicated-node/bin/metrics_ctl start"
+  stop program "/var/vcap/jobs/dedicated-node/bin/metrics_ctl stop"
+  group vcap
+  depends on redis
+
 check process nginx
   with pidfile /var/vcap/sys/run/dedicated-node/nginx.pid
   start program "/var/vcap/jobs/dedicated-node/bin/nginx_ctl start"

@@ -1,0 +1,33 @@
+#!/bin/bash -e
+
+BIN_DIR=/var/vcap/packages/cf-redis-broker/bin
+LOG_DIR=/var/vcap/sys/log/metrics
+RUN_DIR=/var/vcap/sys/run
+PIDFILE=$RUN_DIR/metrics.pid
+CONFIG_PATH=/var/vcap/store/redis/redis.conf
+
+source /var/vcap/packages/common/utils.sh
+
+case $1 in
+
+  start)
+
+    mkdir -p $LOG_DIR $RUN_DIR
+    chown vcap:vcap $LOG_DIR $RUN_DIR
+
+    echo $$ > $PIDFILE
+
+    exec chpst -u vcap:vcap ${BIN_DIR}/metrics --redis-config="${CONFIG_PATH}" \
+      >>$LOG_DIR/metrics.stdout.log 2>>$LOG_DIR/metrics.stderr.log
+
+    ;;
+
+  stop)
+    kill_and_wait $PIDFILE 55 0
+    ;;
+
+  *)
+    echo "Usage: metrics_ctl {start|stop}"
+    ;;
+
+esac
