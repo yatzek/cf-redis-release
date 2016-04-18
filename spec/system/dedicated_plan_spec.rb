@@ -68,7 +68,7 @@ describe 'dedicated plan' do
       service_broker.deprovision_instance(@service_instance)
     end
 
-    it 'has the correct maxmemory' do
+    fit 'has the correct maxmemory' do
       client = service_client_builder(@binding)
       expect(client.config['maxmemory'].to_i).to eq(max_memory)
     end

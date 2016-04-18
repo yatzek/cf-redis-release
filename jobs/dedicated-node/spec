@@ -25,7 +25,9 @@ packages:
 - aws-cli
 
 properties:
-
+  redis.ram_mb:
+    default: 1024
+    description: RAM in MB
   redis.client_timeout:
     default: 0
     description: Close the connection after a client is idle for N seconds (0 to disable)

@@ -88,6 +88,7 @@ jobs:
   - name: redis_z1
     static_ips: (( merge || static_ips(0,1,2,3,4) ))
   persistent_disk: 4096
+  ram_mb: 
   resource_pool: (( .resource_pools.[0].name ))
   templates: (( job_templates.dedicated_node additional_job_templates.dedicated_node ))
   <<: (( merge ))
