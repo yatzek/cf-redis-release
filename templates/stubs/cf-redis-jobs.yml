@@ -90,7 +90,7 @@ jobs:
   networks:
   - name: redis_z1
     static_ips: (( merge || static_ips(0) ))
-  persistent_disk: 4096
+  persistent_disk: 8192
   resource_pool: (( .resource_pools.[0].name ))
   templates: (( job_templates.cf_redis_broker additional_job_templates.cf_redis_broker ))
   <<: (( merge ))
@@ -98,8 +98,8 @@ jobs:
   name: dedicated-node
   networks:
   - name: redis_z1
-    static_ips: (( merge || static_ips(1,2,3,4,5,6,7,8,9,10) ))
-  persistent_disk: 4096
+    static_ips: (( merge || static_ips(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18) ))
+  persistent_disk: 10240
   resource_pool: (( .resource_pools.[0].name ))
   templates: (( job_templates.dedicated_node additional_job_templates.dedicated_node ))
   <<: (( merge ))
