@@ -1,0 +1,40 @@
+# Specifies the Sentinel port, log file, and a work directory and run it a daemon service.
+
+port 26379
+
+dir /var/vcap/data/jobs/sentinel/
+
+# Monitor redis_6379 master running on port 6379 and consider it in 0DOWN state with at
+# least 1 quorum sentinels agree in order to start a failover.
+# Sentinel will auto discover the slaves and rewrite the configuration files to add the slaves
+# So you do not need to specify slaves. Also, note that the configuration file is rewritten.
+# When a slave is promoted to master state.
+
+sentinel myid 800ab15aa1b9e9e79d204d332d15df4a90fd383d
+
+# Specifies the password to use to authenticate with the master or slaves if required.
+# For Redis instances mixed with 'auth' and 'nonauth', you need to ensure to set the same
+# Password is required in all the instances. The demo Redis servers require no password.
+
+# Specifies the number of milliseconds the master, slave or sentinel should be consider
+# down and unreachable in SDOWN state.
+
+sentinel monitor cluster 10.244.3.6 6379 2
+sentinel down-after-milliseconds cluster 3000
+
+# Specifies the failover timeout in milliseconds that because use in the following ways:
+# * The time needed to restart a failover after a previous failover attempted on the same master
+# * The time needed for a slave replicating to a wrong master with current configuration, to
+# Force to replicate with the right master.
+# * The time needed to cancel a failover that is already in progress but did not produce any
+# Configuration change (The slave has not yet acknowledged as SLAVEOF NO ONE)
+# * The max time a failover in progress waits for all the slaves to be reconfigured as slaves of the new master.
+
+sentinel failover-timeout cluster 6000
+
+# Specify how many slaves we can reconfigure to point to the new slave during the failover.
+# Recommends a low number if the slaves are used to serve query in order to avoid the slaves to
+# Becomes unreachable while performing the synchronization with the master.
+
+# sentinel parallel-syncs cluster 6379 1
+sentinel auth-pass cluster mypass

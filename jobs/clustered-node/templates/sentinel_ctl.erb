@@ -1,0 +1,39 @@
+#!/bin/bash -e
+
+JOB_DIR=/var/vcap/jobs/clustered-node
+LOG_DIR=/var/vcap/sys/log/sentinel
+RUN_DIR=/var/vcap/sys/run
+PIDFILE=$RUN_DIR/sentinel.pid
+CONFIG_PATH=/var/vcap/store/redis/sentinel.conf
+SENTINEL_WORKDIR=/var/vcap/data/jobs/sentinel/
+
+source /var/vcap/packages/redis-common/utils.sh
+
+case $1 in
+
+  start)
+
+    mkdir -p $LOG_DIR $RUN_DIR $SENTINEL_WORKDIR
+    chown vcap:vcap $LOG_DIR $RUN_DIR $SENTINEL_WORKDIR
+    [ -e $LOG_DIR/sentinel.stdout.log ] && chown vcap:vcap $LOG_DIR/sentinel.stdout.log
+    [ -e $LOG_DIR/sentinel.stderr.log ] && chown vcap:vcap $LOG_DIR/sentinel.stderr.log
+
+    cp $JOB_DIR/config/sentinel.conf $CONFIG_PATH && chown vcap:vcap $CONFIG_PATH
+
+    echo $$ > $PIDFILE
+
+    exec chpst -u vcap:vcap /var/vcap/packages/redis/bin/redis-server $CONFIG_PATH --sentinel \
+      > >(tee -a $LOG_DIR/sentinel.stdout.log | logger -p local0.info ) \
+      2> >(tee -a $LOG_DIR/sentinel.stderr.log | logger -p local0.err )
+
+    ;;
+
+  stop)
+    kill_and_wait $PIDFILE 55 0
+    ;;
+
+  *)
+    echo "Usage: sentinel_ctl {start|stop}"
+    ;;
+
+esac

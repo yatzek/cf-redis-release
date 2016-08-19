@@ -1,0 +1,11 @@
+check process redis
+  with pidfile /var/vcap/sys/run/redis.pid
+  start program "/var/vcap/jobs/clustered-node/bin/redis_ctl start"
+  stop program "/var/vcap/jobs/clustered-node/bin/redis_ctl stop"
+  group vcap
+
+check process sentinel
+  with pidfile /var/vcap/sys/run/sentinel.pid
+  start program "/var/vcap/jobs/clustered-node/bin/sentinel_ctl start"
+  stop program "/var/vcap/jobs/clustered-node/bin/sentinel_ctl stop"
+  group vcap
