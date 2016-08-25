@@ -34,6 +34,9 @@ case $1 in
     # Recommended for running redis on a VM in production (https://www.pivotaltracker.com/story/show/74949514)
     sysctl vm.overcommit_memory=1
 
+    # Disable THP
+    echo never > /sys/kernel/mm/transparent_hugepage/enabled
+
     # Run backups at midnight, every night
     # Add new entry to vcap crontab if not already present
     if ! crontab -u vcap -l | grep --quiet $BIN_DIR

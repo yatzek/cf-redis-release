@@ -41,6 +41,13 @@ describe 'dedicated plan' do
     end
   end
 
+  it 'doesn\'t warn about THP support' do
+    ret_value = ssh_gateway.execute_on(node_hosts.first, 'grep -c "WARNING you have Transparent Huge Pages (THP) support enabled in your kernel." /var/vcap/sys/log/redis/redis.log')
+    occurrences = Integer(ret_value.strip)
+
+    expect(occurrences).to eq(0)
+  end
+
   let(:admin_command_availability) do
     {
       'DEBUG' => false,
