@@ -3,15 +3,35 @@
 BASE_DIR=$(cd $(dirname $0)/..; echo "$PWD")
 
 templates=$BASE_DIR/templates
-
+stubs_dir=$templates/sample_stubs
 infrastructure=$1
-additional_properties=$2
+array=( "$@" )
+additional_properties=""
 
-if [ ! -z $3 ]; then
-  stubs_dir=$3
-else
-  stubs_dir=$templates/sample_stubs
+# additional_properties=$2
+
+# if [ ! -z $3 ]; then
+#   stubs_dir=$3
+# else
+#   stubs_dir=$templates/sample_stubs
+# fi
+
+if [ ! -z $2 ]; then
+  if [ -d $2 ]; then
+    stubs_dir=$2
+    index=3
+  else
+    index=2
+  fi
 fi
+
+
+for ((i=index-1; i<$#; i++ ));
+do
+  additional_properties="${array[$i]} $additional_properties"
+done
+
+echo $additional_properties
 
 which spiff > /dev/null 2>&1
 if [ $? -ne 0 ]; then
@@ -24,15 +44,26 @@ if [ "$infrastructure" != "aws" ] && \
    [ "$infrastructure" != "azure" ] && \
    [ "$infrastructure" != "warden" ] && \
    [ "$infrastructure" != "openstack" ] && \
-   [ "$infrastructure" != "vsphere" ] ; then
+   [ "$infrastructure" != "v+sphere" ] ; then
  echo "usage: ${0} <aws|azure|warden|openstack|vsphere> [stubs...]"
  exit 1
 fi
+
+ # echo "$templates/stubs/cf-redis-deployment.yml" \
+ # "$templates/stubs/cf-redis-jobs.yml" \
+ # "$templates/stubs/cf-redis-infrastructure.yml" \
+ # $additional_properties \
+ # "$stubs_dir/infrastructure-$infrastructure.yml" \
+ # "$stubs_dir/meta-$infrastructure.yml"
 
 spiff merge \
  "$templates/stubs/cf-redis-deployment.yml" \
  "$templates/stubs/cf-redis-jobs.yml" \
  "$templates/stubs/cf-redis-infrastructure.yml" \
- $additional_properties \
+ "/tmp/temp-prod/prod-aws/stubs/redis/cf-redis-cs-jobs.yml" \
  "$stubs_dir/infrastructure-$infrastructure.yml" \
- "$stubs_dir/meta-$infrastructure.yml"
+ "$stubs_dir/meta-$infrastructure.yml" \
+ "/tmp/temp-prod/prod-aws/stubs/redis/canary.yml"
+
+ # $additional_properties \
+ # "/tmp/temp-prod/prod-aws/stubs/redis/cf-redis-cs-jobs.yml" \
