@@ -1,0 +1,34 @@
+director_uuid: <%= `bosh status --uuid` %>
+nats_machines: [10.244.0.6]
+nats_user: nats
+nats_password: nats
+nats_port: 4222
+cf_system_domain: bosh-lite.com
+cf_apps_domain: bosh-lite.com
+cf_api_url: https://api.bosh-lite.com
+cf_admin_username: admin
+cf_admin_password: admin
+default_vm_type: default
+default_networks:
+- name: default
+default_azs: [default]
+default_persistent_disk_type: default
+syslog_address: 127.0.0.1
+syslog_port: 1234
+syslog_protocol: udp
+redis_maxmemory: 262144000
+redis_config_command: configalias
+redis_save_command: anotherrandomstring
+redis_bg_save_command: yetanotherrandomstring
+redis_log_level: notice
+broker_service_name: redis
+broker_service_id: f0788990-a9ef-49bd-8cc5-8ee64d85ef52
+shared_vm_plan_id: e9207b8e-272d-4db2-8613-a0c02af0facd
+dedicated_vm_plan_id: 1ece8caa-43e2-4f07-b255-e4609a9f4b99
+service_instance_limit: 5
+broker_username: admin
+broker_password: admin
+broker_nginx_port: 12350
+broker_name: redis
+dedicated_node_instances: 2
+agent_backend_port: 9876

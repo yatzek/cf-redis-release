@@ -23,9 +23,13 @@ packages:
 
 provides:
 - name: redis_broker
-  type: redis
+  type: redis_broker
   properties:
   - redis.config_command
+  - redis.broker
+
+consumes:
+- {name: dedicated_node, type: dedicated_node}
 
 properties:
   service-backup.source_folder:
@@ -170,19 +174,9 @@ properties:
   redis.broker.host:
     description: "Host (DNS) or IP address used by the broker and bound applications to reach the service"
 
-  redis.broker.dedicated_nodes:
-    description: List of node IPs for the dedicated plan
-    default: []
-  redis.broker.dedicated_port:
-    description: The port used by the redis instances
-    default: 6379
-
   redis.broker.name:
     default: redis
     description: Name of the broker, to be used in cf commandline operations and by the broker-registrar
-
-  redis.broker.network:
-    description: The name of the network that the redis broker runs on.
 
   redis.broker.description:
     default: "Redis service to provide a key-value store"
@@ -208,11 +202,6 @@ properties:
   redis.broker.consistency_check_interval:
     default: 0
     description: Interval in seconds between consistency checks. If this option is set to zero, consistency checks are not being performed.
-
-  cf.apps_domain:
-    description: Domain used by `cf push`ed apps
-  cf.system_domain:
-    description: Domain shared by the UAA and CF API eg 'bosh-lite.com'
 
   syslog_aggregator.address:
     description: The address of the syslog aggregator

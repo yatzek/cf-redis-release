@@ -21,9 +21,13 @@ packages:
 
 provides:
 - name: dedicated_node
-  type: redis
+  type: dedicated_node
   properties:
   - redis.config_command
+  - redis.broker.dedicated_port
+
+consumes:
+- {name: redis_broker, type: redis_broker}
 
 properties:
   service-backup.source_folder:
@@ -123,15 +127,6 @@ properties:
   redis.limits.maxclients:
     default: 10000
     description: Set the max number of connected clients at the same time
-
-  redis.broker.backend_host:
-    description: The port for the broker unicorn process to run on
-  redis.broker.auth.username:
-    default: admin
-    description: The username for HTTP Basic Auth on the agent, also used for the broker
-  redis.broker.auth.password:
-    default: admin
-    description: The password for HTTP Basic Auth on the agent, also used for the broker
 
   redis.broker.dedicated_port:
     description: The port used by the redis instances

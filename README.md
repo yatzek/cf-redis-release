@@ -119,10 +119,10 @@ consumed by:
 
 ```yaml
 consumes:
-- name: redis_broker
-  type: redis
-- name: dedicated_node
-  type: redis
+- name: broker
+  type: redis_broker
+- name: node
+  type: dedicated_node
 ```
 
 ## Testing

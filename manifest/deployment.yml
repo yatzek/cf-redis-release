@@ -1,0 +1,160 @@
+---
+director_uuid: ((director_uuid))
+
+name: cf-redis
+
+stemcells:
+- alias: default
+  os: ubuntu-trusty
+  version: "3363.20"
+
+instance_groups:
+- name: cf-redis-broker
+  instances: 1
+  jobs:
+  - name: cf-redis-broker
+    release: cf-redis
+    properties:
+      syslog_aggregator:
+        address: ((syslog_address))
+        port: ((syslog_port))
+      redis:
+        maxmemory: ((redis_maxmemory))
+        config_command: ((redis_config_command))
+        save_command: ((redis_save_command))
+        bg_save_command: ((redis_bg_save_command))
+        log_level: ((redis_log_level))
+        broker:
+          service_name: ((broker_service_name))
+          service_id: ((broker_service_id))
+          shared_vm_plan_id: ((shared_vm_plan_id))
+          dedicated_vm_plan_id: ((dedicated_vm_plan_id))
+          service_instance_limit: ((service_instance_limit))
+          auth:
+            username: ((broker_username))
+            password: ((broker_password))
+          backend_port: 12345
+          nginx:
+            port: ((broker_nginx_port))
+          name: ((broker_name))
+      service-backup:
+        source_folder: /var/vcap/store/redis-backup/
+  - name: syslog-configurator
+    release: cf-redis
+    properties:
+      syslog_aggregator:
+        address: ((syslog_address))
+        port: ((syslog_port))
+        transport: ((syslog_protocol))
+  - name: route_registrar
+    release: routing
+    properties:
+      nats:
+        machines: ((nats_machines))
+        user: ((nats_user))
+        password: ((nats_password))
+        port: ((nats_port))
+      route_registrar:
+        routes:
+        - name: broker_0
+          registration_interval: 10s
+          port: ((broker_nginx_port))
+          tags:
+            component: redis-broker
+            env: production
+          uris: [redis-broker.((cf_system_domain))]
+          health_check:
+            name: redis-broker
+            script_path: /var/vcap/jobs/cf-redis-broker/bin/health_check.sh
+  vm_type: ((default_vm_type))
+  stemcell: default
+  networks: ((default_networks))
+  azs: ((default_azs))
+  persistent_disk_type: ((default_persistent_disk_type))
+- name: dedicated-node
+  instances: ((dedicated_node_instances))
+  networks: ((default_networks))
+  vm_type: ((default_vm_type))
+  persistent_disk_type: ((default_persistent_disk_type))
+  azs: ((default_azs))
+  stemcell: default
+  jobs:
+  - name: dedicated-node
+    release: cf-redis
+    properties:
+      service-backup:
+        source_folder: /var/vcap/store/redis-backup/
+      redis:
+        log_level: ((redis_log_level))
+        config_command: ((redis_config_command))
+      agent:
+        backend_port: ((agent_backend_port))
+  - name: syslog-configurator
+    release: cf-redis
+    properties:
+      syslog_aggregator:
+        address: ((syslog_address))
+        port: ((syslog_port))
+        transport: ((syslog_protocol))
+- name: broker-registrar
+  instances: 1
+  lifecycle: errand
+  jobs:
+  - name: broker-registrar
+    release: cf-redis
+    properties:
+      cf:
+        api_url: ((cf_api_url))
+        admin_username: ((cf_admin_username))
+        admin_password: ((cf_admin_password))
+        apps_domain: ((cf_apps_domain))
+        system_domain: ((cf_system_domain))
+  vm_type: ((default_vm_type))
+  stemcell: default
+  networks: ((default_networks))
+  azs: ((default_azs))
+- name: broker-deregistrar
+  instances: 1
+  lifecycle: errand
+  jobs:
+  - name: broker-deregistrar
+    release: cf-redis
+    properties:
+      cf:
+        api_url: ((cf_api_url))
+        admin_username: ((cf_admin_username))
+        admin_password: ((cf_admin_password))
+  vm_type: ((default_vm_type))
+  stemcell: default
+  networks: ((default_networks))
+  azs: ((default_azs))
+- name: smoke-tests
+  instances: 1
+  lifecycle: errand
+  jobs:
+  - name: broker-deregistrar
+    release: cf-redis
+    properties:
+      cf:
+        api_url: ((cf_api_url))
+        admin_username: ((cf_admin_username))
+        admin_password: ((cf_admin_password))
+        apps_domain: ((cf_apps_domain))
+        system_domain: ((cf_system_domain))
+  vm_type: ((default_vm_type))
+  stemcell: default
+  networks: ((default_networks))
+  azs: ((default_azs))
+
+
+update:
+  canaries: 1
+  canary_watch_time: 30000-180000
+  max_in_flight: 6
+  update_watch_time: 30000-180000
+
+releases:
+- name: cf-redis
+  version: latest
+- name: routing
+  version: 0.143.0

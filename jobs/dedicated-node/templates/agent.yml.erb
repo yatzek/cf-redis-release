@@ -3,5 +3,5 @@ conf_path: /var/vcap/store/redis/redis.conf
 monit_executable_path: /var/vcap/bosh/bin/monit
 backend_port: <%= p('redis.agent.backend_port') %>
 auth:
-  username: <%= p('redis.broker.auth.username') %>
-  password: <%= p('redis.broker.auth.password') %>
+  username: <%= link('redis_broker').p('redis.broker.auth.username') %>
+  password: <%= link('redis_broker').p('redis.broker.auth.password') %>
