@@ -32,3 +32,4 @@ broker_nginx_port: 12350
 broker_name: redis
 dedicated_node_instances: 2
 agent_backend_port: 9876
+broker_subdomain: redis-broker

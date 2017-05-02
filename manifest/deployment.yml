@@ -37,6 +37,8 @@ instance_groups:
           nginx:
             port: ((broker_nginx_port))
           name: ((broker_name))
+          protocol: https
+          host: ((broker_subdomain)).((cf_system_domain))
       service-backup:
         source_folder: /var/vcap/store/redis-backup/
   - name: syslog-configurator
@@ -62,7 +64,7 @@ instance_groups:
           tags:
             component: redis-broker
             env: production
-          uris: [redis-broker.((cf_system_domain))]
+          uris: [((broker_subdomain)).((cf_system_domain))]
           health_check:
             name: redis-broker
             script_path: /var/vcap/jobs/cf-redis-broker/bin/health_check.sh
@@ -132,7 +134,7 @@ instance_groups:
   instances: 1
   lifecycle: errand
   jobs:
-  - name: broker-deregistrar
+  - name: smoke-tests
     release: cf-redis
     properties:
       cf:

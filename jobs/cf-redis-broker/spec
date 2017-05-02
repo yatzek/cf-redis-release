@@ -173,6 +173,9 @@ properties:
     description: server_names_hash_bucket_size for nginx
   redis.broker.host:
     description: "Host (DNS) or IP address used by the broker and bound applications to reach the service"
+  redis.broker.protocol:
+    description: Protocol (http/https) provided to the Cloud Controller when registering/deregistering the broker
+    default: https
 
   redis.broker.name:
     default: redis

@@ -20,7 +20,7 @@ redis:
   description: <%= p('redis.broker.description') %>
   icon_image: <%= p('redis.broker.icon_image') %>
   dedicated:
-    node: <% link('dedicated_node').instances.each do |instance| %>
+    nodes: <% link('dedicated_node').instances.each do |instance| %>
     - <%= instance.address %>
     <% end %>
     port: <%= link('dedicated_node').p('redis.broker.dedicated_port') %>
