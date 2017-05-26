@@ -12,6 +12,10 @@ module Helpers
     def dedicated_node_ssh
       BOSHCLIWrapper.new(bosh_manifest.deployment_name, DEDICATED_NODE_JOB_NAME)
     end
+
+    def service_instance_ssh(host)
+      BOSHCLIWrapper.new(bosh_manifest.deployment_name, DEDICATED_NODE_JOB_NAME)
+    end
   end
 
   class BOSHCLIWrapper
@@ -58,8 +62,11 @@ module Helpers
       result = JSON.parse(raw_output)
       stdout = []
 
-      result.fetch('Blocks').each_slice(3) do |slice|
-        stdout << slice[1].strip if slice[0].include? 'stdout |'
+      blocks = result.fetch('Blocks')
+      blocks.each_with_index do |line, index|
+        if line.include? 'stdout |'
+          stdout << blocks[index+1].strip
+        end
       end
 
       stdout.join("\n")

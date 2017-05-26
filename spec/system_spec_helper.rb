@@ -73,6 +73,7 @@ puts ExcludeHelper::warnings
 
 RSpec.configure do |config|
   config.include Helpers::Environment
+  config.include Helpers::Utilities
   config.include Helpers::SSHTargets
   config.include Prof::Matchers
   config.filter_run :focus
