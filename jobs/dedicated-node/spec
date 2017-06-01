@@ -2,11 +2,16 @@
 name: dedicated-node
 
 templates:
+  envs.sh: config/envs.sh
+  pre-start.sh: bin/pre-start
+
   agent.yml.erb: config/agent.yml
-  redis.conf.erb: config/redis.conf
   nginx.conf.erb: config/nginx.conf
 
-  redis_ctl.erb: bin/redis_ctl
+  redis/start.sh: bin/redis/start.sh
+  redis/stop.sh: bin/redis/stop.sh
+  redis/redis.conf.erb: config/redis.conf
+
   redis-agent_ctl.erb: bin/redis-agent_ctl
   nginx_ctl.erb: bin/nginx_ctl
 
