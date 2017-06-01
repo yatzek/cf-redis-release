@@ -1,8 +1,5 @@
 #!/bin/bash -e
 
-LOG_DIR=/var/vcap/sys/log/redis-agent
-DATA_DIR=/var/vcap/store/redis
-PIDFILE=/var/vcap/sys/run/redis-agent.pid
 <% if_p('service-backup.source_folder') do %>
 BACKUP_SOURCE_DIR=<%= p('service-backup.source_folder') %>
 <% end %>
@@ -25,8 +22,8 @@ case $1 in
 
   start)
 
-    mkdir -p $LOG_DIR $DATA_DIR $BACKUP_SOURCE_DIR
-    chown vcap:vcap $LOG_DIR $DATA_DIR $BACKUP_SOURCE_DIR
+    mkdir -p $BACKUP_SOURCE_DIR
+    chown vcap:vcap $BACKUP_SOURCE_DIR
 
     cd $DATA_DIR
 

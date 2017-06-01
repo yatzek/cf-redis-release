@@ -3,6 +3,9 @@ set -e
 
 source /var/vcap/jobs/dedicated-node/config/envs.sh
 
+mkdir -p "$REDIS_AGENT_LOG_DIR"
+chown vcap:vcap "$REDIS_AGENT_LOG_DIR"
+
 mkdir -p "$REDIS_LOG_DIR"
 chown vcap:vcap "$REDIS_LOG_DIR"
 
