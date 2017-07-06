@@ -1,0 +1,22 @@
+instance_groups:
+- name: smoke-tests
+  jobs:
+  - name: smoke-tests
+    properties:
+      cf:
+        api_url: a-cf-url
+        admin_username: a-username
+        admin_password: a-password
+        apps_domain: an-apps-domain
+        system_domain: a-system-domain
+        skip_ssl_validation: false
+      redis:
+        broker:
+          service_name: a-service-name
+          service_instance_limit: 42
+          dedicated_nodes:
+          - a-dedicated-node-ip
+      retry:
+        max_attempts: 5
+        backoff: linear
+        baseline_interval_milliseconds: 1000
